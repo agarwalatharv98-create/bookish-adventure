@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Upload System</title>
+</head>
+<body style="text-align:center; font-family:Arial;">
+
+  <h2>📂 Upload Your File</h2>
+
+  <input type="file" id="fileInput">
+  <br><br>
+
+  <button onclick="uploadFile()">Upload</button>
+
+  <p id="status"></p>
+
+  <img id="preview" width="200" style="display:none; margin-top:10px;" />
+
+  <h3>📁 Uploaded Files</h3>
+  <ul id="fileList"></ul>
+
+  <script>
+    // Load saved files on page load
+    window.onload = function() {
+      const savedFiles = JSON.parse(localStorage.getItem("files")) || [];
+      const list = document.getElementById("fileList");
+
+      savedFiles.forEach(fileName => {
+        const listItem = document.createElement("li");
+        listItem.innerText = fileName;
+        list.appendChild(listItem);
+      });
+    };
+
+    function uploadFile() {
+      const file = document.getElementById("fileInput").files[0];
+
+      if (!file) {
+        document.getElementById("status").innerText = "Please select a file";
+        return;
+      }
+
+      const preview = document.getElementById("preview");
+
+      if (file.type.startsWith("image/")) {
+        preview.style.display = "block";
+        preview.src = URL.createObjectURL(file);
+      } else {
+        preview.style.display = "none";
+      }
+
+      document.getElementById("status").innerText = "File selected: " + file.name;
+
+      const list = document.getElementById("fileList");
+      const listItem = document.createElement("li");
+      listItem.innerText = file.name;
+      list.appendChild(listItem);
+
+      // Save to localStorage
+      let savedFiles = JSON.parse(localStorage.getItem("files")) || [];
+      savedFiles.push(file.name);
+      localStorage.setItem("files", JSON.stringify(savedFiles));
+    }
+  </script>
+
+</body>
+</html>
